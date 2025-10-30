@@ -1,34 +1,48 @@
 import PropTypes from "prop-types";
+import { Card, Button, Container, Row, Col } from "react-bootstrap";
 
 export const MovieView = ({ movie, onBackClick }) => {
   return (
-    <div>
-      <div>
-        <img src={movie.imageUrl} alt={movie.title} />
-      </div>
+    <Container className="py-4">
+      <Card className="shadow-sm">
+        <Row className="g-0">
+          {/* Movie Poster */}
+          <Col xs={12} md={5}>
+            <Card.Img
+              src={movie.imageUrl}
+              alt={movie.title}
+              className="h-100 rounded-start"
+              style={{ objectFit: "cover" }}
+            />
+          </Col>
 
-      <div>
-        <span>Title: </span>
-        <span>{movie.title}</span>
-      </div>
+          {/* Movie Details */}
+          <Col xs={12} md={7}>
+            <Card.Body>
+              <Card.Title className="mb-3">{movie.title}</Card.Title>
 
-      <div>
-        <span>Director: </span>
-        <span>{movie.director.name}</span>
-      </div>
+              <Card.Text>
+                <strong>Director:</strong> {movie.director.name}
+              </Card.Text>
 
-      <div>
-        <span>Genre: </span>
-        <span>{movie.genre.name}</span>
-      </div>
+              <Card.Text>
+                <strong>Genre:</strong> {movie.genre.name}
+              </Card.Text>
 
-      <div>
-        <span>Description: </span>
-        <span>{movie.description}</span>
-      </div>
+              <Card.Text>
+                <strong>Description:</strong> {movie.description}
+              </Card.Text>
 
-      <button onClick={onBackClick}>Back</button>
-    </div>
+              <div className="mt-4">
+                <Button variant="primary" onClick={onBackClick}>
+                  Back
+                </Button>
+              </div>
+            </Card.Body>
+          </Col>
+        </Row>
+      </Card>
+    </Container>
   );
 };
 

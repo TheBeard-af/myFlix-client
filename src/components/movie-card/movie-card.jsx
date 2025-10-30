@@ -1,15 +1,46 @@
 import PropTypes from "prop-types";
+import { Card, Button } from "react-bootstrap";
 
 export const MovieCard = ({ movie, onMovieClick }) => {
   return (
-    <div
-      onClick={() => {
-        onMovieClick(movie);
-      }}
-      style={{ cursor: "pointer", marginBottom: "10px" }}
+    <Card
+      className="h-100 shadow-sm"
+      style={{ cursor: "pointer" }}
+      onClick={() => onMovieClick(movie)}
     >
-      {movie.title}
-    </div>
+      {/* Image fills width on top */}
+      <Card.Img
+        variant="top"
+        src={movie.imageUrl}
+        alt={movie.title}
+        style={{ objectFit: "cover", height: "400px" }}
+      />
+
+      {/* Title and Info */}
+      <Card.Body className="d-flex flex-column justify-content-between">
+        <div>
+          <Card.Title>{movie.title}</Card.Title>
+          <Card.Text className="mb-1">
+            <strong>Genre:</strong> {movie.genre.name}
+          </Card.Text>
+          <Card.Text>
+            <strong>Director:</strong> {movie.director.name}
+          </Card.Text>
+        </div>
+
+        <div className="mt-3">
+          <Button
+            variant="primary"
+            onClick={(e) => {
+              e.stopPropagation(); // prevents parent onClick
+              onMovieClick(movie);
+            }}
+          >
+            View Details
+          </Button>
+        </div>
+      </Card.Body>
+    </Card>
   );
 };
 
