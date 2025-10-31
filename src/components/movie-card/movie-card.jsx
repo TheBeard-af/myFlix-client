@@ -1,13 +1,10 @@
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Card, Button } from "react-bootstrap";
 
-export const MovieCard = ({ movie, onMovieClick }) => {
+export const MovieCard = ({ movie }) => {
   return (
-    <Card
-      className="h-100 shadow-sm"
-      style={{ cursor: "pointer" }}
-      onClick={() => onMovieClick(movie)}
-    >
+    <Card className="h-100 shadow-sm">
       {/* Image fills width on top */}
       <Card.Img
         variant="top"
@@ -29,15 +26,9 @@ export const MovieCard = ({ movie, onMovieClick }) => {
         </div>
 
         <div className="mt-3">
-          <Button
-            variant="primary"
-            onClick={(e) => {
-              e.stopPropagation(); // prevents parent onClick
-              onMovieClick(movie);
-            }}
-          >
-            View Details
-          </Button>
+          <Link to={`/movies/${encodeURIComponent(movie._id)}`}>
+            <Button variant="primary">View Details</Button>
+          </Link>
         </div>
       </Card.Body>
     </Card>
@@ -61,5 +52,4 @@ MovieCard.propTypes = {
     imageUrl: PropTypes.string.isRequired,
     featured: PropTypes.bool,
   }).isRequired,
-  onMovieClick: PropTypes.func.isRequired,
 };
