@@ -7,6 +7,7 @@ import { SignupView } from "../signup-view/signup-view";
 import { ProfileView } from "../profile-view/profile-view";
 import { NavigationBar } from "../navigation-bar/navigation-bar";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { NavigationBar } from "../navigation-bar/navigation-bar";
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
