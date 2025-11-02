@@ -101,10 +101,10 @@ export const MainView = () => {
         {movies.map((movie) => (
           <Col
             key={movie._id}
-            xs={12} // 1 per row on mobile (< 576px)
-            sm={6} // 2 per row on small screens (≥ 576px)
-            lg={4} // 3 per row on large screens (≥ 992px)
-            xl={4} // 3 per row on extra large (≥ 1200px)
+            xs={12} // 1 per row on mobile
+            sm={6} // 2 per row on
+            lg={4} // 3 per row on
+            xl={4} // 3 per row on
             className="mb-4"
           >
             <MovieCard
