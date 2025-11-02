@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
 
-export const MovieView = ({ movies }) => {
+export const MovieView = ({ movies, user, token, onToggleFavorite }) => {
   const { movieId } = useParams();
-
   const movie = movies.find((m) => m._id === movieId);
+
+  // Check if this movie is in user's favorites
+  const isFavorite = user?.FavoriteMovies?.includes(movie._id);
+
   return (
     <Container className="py-4">
       <Card className="shadow-sm">
@@ -42,6 +45,17 @@ export const MovieView = ({ movies }) => {
                 <Link to="/">
                   <Button variant="primary">Back</Button>
                 </Link>
+                {user && onToggleFavorite && (
+                  <Button
+                    variant={isFavorite ? "danger" : "outline-danger"}
+                    className="ms-2"
+                    onClick={() => onToggleFavorite(movie._id, isFavorite)}
+                  >
+                    {isFavorite
+                      ? "♥ Remove from Favorites"
+                      : "♡ Add to Favorites"}
+                  </Button>
+                )}
               </div>
             </Card.Body>
           </Col>

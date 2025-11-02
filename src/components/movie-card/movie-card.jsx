@@ -1,8 +1,18 @@
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, Row, Col } from "react-bootstrap";
 
-export const MovieCard = ({ movie }) => {
+export const MovieCard = ({
+  movie,
+  user,
+  token,
+  isFavorite,
+  onToggleFavorite,
+}) => {
+  const handleToggleFavorite = () => {
+    if (!user || !token) return;
+    onToggleFavorite(movie._id, isFavorite);
+  };
   return (
     <Card className="h-100 shadow-sm">
       {/* Image fills width on top */}
@@ -26,9 +36,26 @@ export const MovieCard = ({ movie }) => {
         </div>
 
         <div className="mt-3">
-          <Link to={`/movies/${encodeURIComponent(movie._id)}`}>
-            <Button variant="primary">View Details</Button>
-          </Link>
+          <Row>
+            <Col>
+              <Link to={`/movies/${encodeURIComponent(movie._id)}`}>
+                <Button variant="primary" className="w-100">
+                  View Details
+                </Button>
+              </Link>
+            </Col>
+            {user && (
+              <Col>
+                <Button
+                  variant={isFavorite ? "danger" : "outline-danger"}
+                  className="w-100"
+                  onClick={handleToggleFavorite}
+                >
+                  {isFavorite ? "♥ Remove" : "♡ Add"}
+                </Button>
+              </Col>
+            )}
+          </Row>
         </div>
       </Card.Body>
     </Card>
@@ -52,4 +79,8 @@ MovieCard.propTypes = {
     imageUrl: PropTypes.string.isRequired,
     featured: PropTypes.bool,
   }).isRequired,
+  user: PropTypes.object,
+  token: PropTypes.string,
+  isFavorite: PropTypes.bool,
+  onToggleFavorite: PropTypes.func,
 };
