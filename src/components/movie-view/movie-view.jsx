@@ -1,7 +1,15 @@
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
 
-export const MovieView = ({ movie, onBackClick }) => {
+export const MovieView = ({ movies, user, token, onToggleFavorite }) => {
+  const { movieId } = useParams();
+  const movie = movies.find((m) => m._id === movieId);
+
+  // Check if this movie is in user's favorites
+  const isFavorite = user?.FavoriteMovies?.includes(movie._id);
+
   return (
     <Container className="py-4">
       <Card className="shadow-sm">
@@ -34,9 +42,20 @@ export const MovieView = ({ movie, onBackClick }) => {
               </Card.Text>
 
               <div className="mt-4">
-                <Button variant="primary" onClick={onBackClick}>
-                  Back
-                </Button>
+                <Link to="/">
+                  <Button variant="primary">Back</Button>
+                </Link>
+                {user && onToggleFavorite && (
+                  <Button
+                    variant={isFavorite ? "danger" : "outline-danger"}
+                    className="ms-2"
+                    onClick={() => onToggleFavorite(movie._id, isFavorite)}
+                  >
+                    {isFavorite
+                      ? "♥ Remove from Favorites"
+                      : "♡ Add to Favorites"}
+                  </Button>
+                )}
               </div>
             </Card.Body>
           </Col>
@@ -47,21 +66,22 @@ export const MovieView = ({ movie, onBackClick }) => {
 };
 
 MovieView.propTypes = {
-  movie: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    genre: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      description: PropTypes.string,
-    }).isRequired,
-    director: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      bio: PropTypes.string,
-      birthdate: PropTypes.string,
-    }).isRequired,
-    imageUrl: PropTypes.string.isRequired,
-    featured: PropTypes.bool,
-  }).isRequired,
-  onBackClick: PropTypes.func.isRequired,
+  movies: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      genre: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        description: PropTypes.string,
+      }).isRequired,
+      director: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        bio: PropTypes.string,
+        birthdate: PropTypes.string,
+      }).isRequired,
+      imageUrl: PropTypes.string.isRequired,
+      featured: PropTypes.bool,
+    })
+  ).isRequired,
 };

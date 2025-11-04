@@ -4,10 +4,12 @@ import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
 import { SignupView } from "../signup-view/signup-view";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { NavigationBar } from "../navigation-bar/navigation-bar";
+import { ProfileView } from "../profile-view/profile-view";
 
 export const MainView = () => {
   const [movies, setMovies] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
 
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const storedToken = localStorage.getItem("token");
@@ -31,91 +33,150 @@ export const MainView = () => {
       });
   }, [token]);
 
+  const handleToggleFavorite = (movieId, isFavorite) => {
+    const method = isFavorite ? "DELETE" : "POST";
+    const url = `https://afaqmovies-50ba437af709.herokuapp.com/users/${user.Username}/movies/${movieId}`;
+
+    fetch(url, {
+      method: method,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((updatedUser) => {
+        console.log("Favorites updated:", updatedUser.FavoriteMovies);
+        // Update the user in localStorage
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        setUser(updatedUser);
+      })
+      .catch((error) => {
+        console.error("Error updating favorites:", error);
+        alert("Error updating favorites");
+      });
+  };
+
   // When user is not logged in
-  if (!user) {
-    return (
-      <Container className="py-5">
-        <Row className="justify-content-center align-items-center">
-          {/* Login */}
-          <Col xs={12} md={5} lg={4} className="mb-4 mb-md-0">
-            <LoginView
-              onLoggedIn={(user, token) => {
-                setUser(user);
-                setToken(token);
-              }}
-            />
-          </Col>
-
-          {/* Divider */}
-          <Col
-            xs={12}
-            md="auto"
-            className="d-flex justify-content-center align-items-center my-3 my-md-0"
-          >
-            <span className="fw-bold">or</span>
-          </Col>
-
-          {/* Signup */}
-          <Col xs={12} md={5} lg={4}>
-            <SignupView />
-          </Col>
-        </Row>
-      </Container>
-    );
-  }
-
-  // When viewing a single movie
-  if (selectedMovie) {
-    return (
-      <Container className="py-4">
-        <MovieView
-          movie={selectedMovie}
-          onBackClick={() => setSelectedMovie(null)}
-        />
-      </Container>
-    );
-  }
-
-  // When no movies are loaded
-  if (movies.length === 0) {
-    return <div className="text-center py-5">The list is loading!</div>;
-  }
-
-  // When movies are loaded
   return (
-    <Container className="py-4">
-      <div className="d-flex justify-content-end mb-3">
-        <Button
-          variant="secondary"
-          onClick={() => {
-            setUser(null);
-            setToken(null);
-            localStorage.clear();
-          }}
-        >
-          Logout
-        </Button>
-      </div>
-
-      <Row>
-        {movies.map((movie) => (
-          <Col
-            key={movie._id}
-            xs={12} // 1 per row on mobile
-            sm={6} // 2 per row on
-            lg={4} // 3 per row on
-            xl={4} // 3 per row on
-            className="mb-4"
-          >
-            <MovieCard
-              movie={movie}
-              onMovieClick={(newSelectedMovie) =>
-                setSelectedMovie(newSelectedMovie)
-              }
-            />
-          </Col>
-        ))}
+    <BrowserRouter>
+      <NavigationBar
+        user={user}
+        onLoggedOut={() => {
+          setUser(null);
+          setToken(null);
+          localStorage.clear();
+        }}
+      />
+      <Row className="justify-content-md-center">
+        <Routes>
+          <Route
+            path="/signup"
+            element={
+              <>
+                {user ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Col md={5}>
+                    <SignupView />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <>
+                {user ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Col md={5}>
+                    <LoginView
+                      onLoggedIn={(user, token) => {
+                        setUser(user);
+                        setToken(token);
+                      }}
+                    />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/movies/:movieId"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : movies.length === 0 ? (
+                  <Col>The list is empty!</Col>
+                ) : (
+                  <Col md={8}>
+                    <MovieView
+                      movies={movies}
+                      user={user}
+                      token={token}
+                      onToggleFavorite={handleToggleFavorite}
+                    />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : (
+                  <Col md={12}>
+                    <ProfileView user={user} token={token} movies={movies} />
+                  </Col>
+                )}
+              </>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <>
+                {!user ? (
+                  <Navigate to="/login" replace />
+                ) : movies.length === 0 ? (
+                  <Col>The list is loading!</Col>
+                ) : (
+                  <>
+                    {movies.map((movie) => (
+                      <Col
+                        className="mb-4"
+                        key={movie._id}
+                        xs={12}
+                        sm={6}
+                        lg={4}
+                        xl={4}
+                      >
+                        <MovieCard
+                          movie={movie}
+                          user={user}
+                          token={token}
+                          isFavorite={user?.FavoriteMovies?.includes(movie._id)}
+                          onToggleFavorite={handleToggleFavorite}
+                        />
+                      </Col>
+                    ))}
+                  </>
+                )}
+              </>
+            }
+          />
+        </Routes>
       </Row>
-    </Container>
+    </BrowserRouter>
   );
 };
