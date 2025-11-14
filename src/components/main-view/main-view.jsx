@@ -16,6 +16,11 @@ export const MainView = () => {
 
   const [user, setUser] = useState(storedUser ? storedUser : null);
   const [token, setToken] = useState(storedToken ? storedToken : null);
+  const [query, setQuery] = useState("");
+
+  const filteredMovies = (movies || []).filter((m) =>
+    (m.title || "").toLowerCase().includes(query.trim().toLowerCase())
+  );
 
   useEffect(() => {
     if (!token) return;
@@ -152,24 +157,40 @@ export const MainView = () => {
                   <Col>The list is loading!</Col>
                 ) : (
                   <>
-                    {movies.map((movie) => (
-                      <Col
-                        className="mb-4"
-                        key={movie._id}
-                        xs={12}
-                        sm={6}
-                        lg={4}
-                        xl={4}
-                      >
-                        <MovieCard
-                          movie={movie}
-                          user={user}
-                          token={token}
-                          isFavorite={user?.FavoriteMovies?.includes(movie._id)}
-                          onToggleFavorite={handleToggleFavorite}
-                        />
-                      </Col>
-                    ))}
+                    <Col xs={12} className="mb-3">
+                      <input
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Search movies…"
+                        aria-label="Search movies"
+                        style={{ width: "100%", padding: "8px" }}
+                      />
+                    </Col>
+                    {filteredMovies.length === 0 ? (
+                      <Col>No movies found.</Col>
+                    ) : (
+                      filteredMovies.map((movie) => (
+                        <Col
+                          className="mb-4"
+                          key={movie._id}
+                          xs={12}
+                          sm={6}
+                          lg={4}
+                          xl={4}
+                        >
+                          <MovieCard
+                            movie={movie}
+                            user={user}
+                            token={token}
+                            isFavorite={user?.FavoriteMovies?.includes(
+                              movie._id
+                            )}
+                            onToggleFavorite={handleToggleFavorite}
+                          />
+                        </Col>
+                      ))
+                    )}
                   </>
                 )}
               </>
