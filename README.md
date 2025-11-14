@@ -1,32 +1,96 @@
-myFlix Client
-The client-side (frontend) of the myFlix app, built using React and bundled with Parcel.
-This project demonstrates React’s component-based architecture and a modern build process setup using Parcel.
+# myFlix Client
 
-myFlix-client
+A React-based movie application that allows users to browse, search, and manage their favorite movies. Built with modern web technologies and deployed on Netlify.
+
+## 🎬 Live Demo
+
+- **Frontend**: https://afaq-myflix.netlify.app/
+- **API**: https://afaqmovies-50ba437af709.herokuapp.com/
+
+## ✨ Features
+
+- **User Authentication**: Secure signup and login functionality
+- **Movie Browse**: View a collection of movies with details
+- **Search Filter**: Real-time search to filter movies by title
+- **Favorites**: Add/remove movies from your favorites list
+- **User Profile**: View and manage your profile and favorite movies
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- **React** - UI library
+- **React Router** - Client-side routing
+- **React Bootstrap** - UI components
+- **Parcel** - Build tool and bundler
+- **SCSS** - Styling
+
+### Backend
+
+- **Node.js** & **Express** - Server framework
+- **MongoDB Atlas** - Cloud database
+- **JWT** - Authentication
+- **Heroku** - API hosting
+
+## 📁 Project Structure:
+
+myFlix-client/
+├── src/
+│ ├── components/
+│ │ ├── main-view/
+│ │ ├── movie-card/
+│ │ ├── movie-view/
+│ │ ├── login-view/
+│ │ ├── signup-view/
+│ │ ├── profile-view/
+│ │ └── navigation-bar/
+│ ├── index.html
+│ ├── index.jsx
+│ └── index.scss
 ├── .gitignore
 ├── package.json
-└── src
-├── index.html
-├── index.jsx
-└── index.scss
+└── README.md
 
-Setup Instructions:
+## 🚀 Getting Started
 
-Install dependencies
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/myflix-client.git
+cd myflix-client
+
 npm install
-
-Run the project using Parcel
 parcel src/index.html
 
-Open your browser and go to:
-http://localhost:1234
+🔌 API Endpoints
+The app connects to a RESTful API with the following main endpoints:
 
-Result:
-Good morning
-(in steel blue text on a white background)
+GET /movies - Get all movies (requires auth)
+GET /movies/:id - Get movie by ID
+POST /users - Create new user
+POST /login - User login
+PUT /users/:username - Update user info
+POST /users/:username/movies/:movieId - Add favorite
+DELETE /users/:username/movies/:movieId - Remove favorite
 
-🔧 Tools and Technologies
-React and ReactDOM – for building the UI
-Parcel – as the build tool and bundler
-Babel – (via Parcel) for transpiling modern JavaScript and JSX
-SCSS – for styling
+📱 Key Components
+MainView: Central component managing app state and routing
+MovieCard: Displays individual movie information
+MovieView: Detailed view of a selected movie
+LoginView/SignupView: User authentication forms
+ProfileView: User profile management
+NavigationBar: App navigation with user info
+🎯 Recent Updates
+Added search functionality to filter movies by title
+Implemented favorites system
+Updated movie poster URLs
+Improved responsive design
+```
